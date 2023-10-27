@@ -2,7 +2,6 @@ package tech.httptoolkit.pinning_demo
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.IdRes
@@ -82,7 +81,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun sendUnpinned(view: View) {
+    fun sendUnpinned() {
         GlobalScope.launch(Dispatchers.IO) {
             onStart(R.id.unpinned)
             try {
@@ -100,7 +99,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun sendConfigPinned(view: View) {
+    fun sendConfigPinned() {
         GlobalScope.launch(Dispatchers.IO) {
             onStart(R.id.config_pinned)
             try {
@@ -119,7 +118,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun sendOkHttpPinned(view: View) {
+    fun sendOkHttpPinned() {
         GlobalScope.launch(Dispatchers.IO) {
             onStart(R.id.okhttp_pinned)
 
@@ -149,7 +148,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun sendVolleyPinned(view: View) {
+    fun sendVolleyPinned() {
         onStart(R.id.volley_pinned)
 
         try {
@@ -197,7 +196,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun sendTrustKitPinned(view: View) {
+    fun sendTrustKitPinned() {
         GlobalScope.launch(Dispatchers.IO) {
             onStart(R.id.trustkit_pinned)
             try {
@@ -218,7 +217,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun sendManuallyCustomPinned(view: View) {
+    fun sendManuallyCustomPinned() {
         GlobalScope.launch(Dispatchers.IO) {
             onStart(R.id.manually_pinned)
             try {
@@ -239,7 +238,7 @@ class MainActivity : AppCompatActivity() {
 
                 val certs = socket.session.peerCertificates
 
-                if (!certs.any { cert -> doesCertMatchPin(LETS_ENCRYPT_ROOT_SHA256, cert) }) {
+                if (!certs.any { cert -> LETS_ENCRYPT_ROOT_SHA256.doesCertMatchPin(cert) }) {
                     socket.close() // Close the socket immediately without sending a request
                     throw Error("Unrecognized cert hash.")
                 }
@@ -265,8 +264,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun doesCertMatchPin(pin: String, cert: Certificate): Boolean {
+    private fun String.doesCertMatchPin(cert: Certificate): Boolean {
         val certHash = cert.publicKey.encoded.toByteString().sha256()
-        return certHash == pin.decodeBase64()
+        return certHash == decodeBase64()
     }
 }
